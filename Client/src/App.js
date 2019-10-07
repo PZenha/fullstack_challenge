@@ -8,22 +8,57 @@ class MyForm extends React.Component{
         name: '',
         surname: '',
         country: '',
-        birthday: ''
+        birthday: '',
+        resMongo: [],
       };
       this.handleChange = this.handleChange.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
     }
-  
+
   handleChange(event){
     this.setState({[event.target.name]: event.target.value});
   } 
   
   handleSubmit(event){
-    event.preventDefault();
-  
-    const user = {
-      name: this.state.name,
+    
+    const requestBody = {
+      query: `
+        mutation {
+          createEvent(eventInput: {name: "${this.state.name}", surname: "${this.state.surname}", country: "${this.state.country}", birthday: "${this.state.birthday}"}) {
+            _id
+            name
+            surname
+            country
+            birthday
+          }
+        }
+      `
     };
-  }
+
+    fetch('http://localhost:4000/graphql',{
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res => {
+      if(res.status !== 200 && res.status !== 201) {
+        throw new Error('Failed!')
+      }
+      return res.json();
+    })
+    .then(resData => {
+      this.setState(previousState => ({
+        resMongo: [...previousState.resMongo, resData.data]
+      }));
+      console.log(this.state.resMongo);
+      
+    })
+    .catch(err => {
+      console.log(err);
+    });
+    event.preventDefault();
+  };
   
     render(){
       return(
@@ -33,15 +68,15 @@ class MyForm extends React.Component{
           <div className="maindiv">
             <form onSubmit={this.handleSubmit}>
               <div className="col-lft">
-              <label for="fname">Name:</label> </div>
+              <label htmlFor="fname">Name:</label> </div>
               <div className="col-rght">
               <input id="fname" type='text' name="name" onChange={this.handleChange} /><p></p> </div>
               <div className="col-lft">
-              <label for="sname">Surname:</label> </div>
+              <label htmlFor="sname">Surname:</label> </div>
               <div className="col-rght">
               <input id="sname" type='text' name="surname" onChange={this.handleChange}/><p></p> </div>
               <div className="col-lft">
-              <label for="countries">Countries:</label> </div>
+              <label htmlFor="countries">Countries:</label> </div>
               <div className="col-rght">
                 <div className="custom-select">
               <select id="countries" name="country" onChange={this.handleChange}>
@@ -49,7 +84,7 @@ class MyForm extends React.Component{
                 <option name="Germany">Germany</option>
                 </select></div><p></p></div>
                 <div className="col-lft">
-              <label for="birthd">Birthday:</label> </div>
+              <label htmlFor="birthd">Birthday:</label> </div>
               <div className="col-rght">
               <input id="birthd" type="date" name="birthday" onChange={this.handleChange}/><p></p> </div>
               <div id="buttonpos">
@@ -62,13 +97,14 @@ class MyForm extends React.Component{
   
           <div className="tableDiv">
             <table>
+              <tbody>
               <tr>
                 <th>Name</th>
                 <th>Country</th>
                 <th>Birthday</th>
               </tr>
               <tr>
-                <td>Pedro Zenha</td>
+                <td></td>
                 <td>Portugal</td>
                 <td>11/12/1996</td>
               </tr>
@@ -77,6 +113,7 @@ class MyForm extends React.Component{
                 <td>Mexedo</td>
                 <td>19/03/1997</td>
               </tr>
+              </tbody>
             </table>
           </div>
   

@@ -8,25 +8,33 @@ require('dotenv/config');
 
 const app = express();
 
-const events = [];
-
 app.use(bodyParser.json());
+
+app.use((req,res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 app.use('/graphql', graphqlHttp({
   schema: buildSchema(`
     type Event {
       _id: ID!
-      title: String!
-      description: String!
-      price: Float!
-      date: String!
+      name: String!
+      surname: String!
+      country: String!
+      birthday: String!
     }
 
     input EventInput {
-      title: String!
-      description: String!
-      price: Float!
-      date: String!
+      name: String!
+      surname: String!
+      country: String!
+      birthday: String!
     }
 
     type RootQuery {
@@ -56,10 +64,10 @@ app.use('/graphql', graphqlHttp({
     },
     createEvent: (args) => {
       const event = new Event({
-        title: args.eventInput.title,
-        description: args.eventInput.description,
-        price: args.eventInput.price,
-        date: new Date(args.eventInput.date)
+        name: args.eventInput.name,
+        surname: args.eventInput.surname,
+        country: args.eventInput.country,
+        birthday: args.eventInput.birthday
       });
       return event.save().then(result => {
               console.log(result);
