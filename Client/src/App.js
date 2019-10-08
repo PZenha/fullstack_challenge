@@ -1,5 +1,6 @@
 import React from 'react';
 import './styles/style.css';
+import Greeting from './Greeting';
 
 class MyForm extends React.Component{
     constructor(props){
@@ -10,17 +11,21 @@ class MyForm extends React.Component{
         country: '',
         birthday: '',
         resMongo: [],
+        clicked: false
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.tableInfo = this.tableInfo.bind(this);
     }
 
   handleChange(event){
     this.setState({[event.target.name]: event.target.value});
+    this.setState({clicked: false});
   } 
   
   handleSubmit(event){
-    
+    this.setState({clicked: true});
+
     const requestBody = {
       query: `
         mutation {
@@ -60,7 +65,28 @@ class MyForm extends React.Component{
     event.preventDefault();
   };
   
+  tableInfo(){
+    if(this.state.resMongo.length !== 0){
+    return this.state.resMongo.map((info,index) => {
+        return (
+            <tr key={index}>
+                <td>{info.createEvent.name} {info.createEvent.surname}</td>
+                <td>{info.createEvent.country}</td>
+                <td>{info.createEvent.birthday}</td>
+            </tr>
+        );
+    })
+  }
+}
+
     render(){
+
+      let message; 
+
+      if(this.state.clicked){
+        message = <Greeting clicked={this.state.clicked} name={this.state.name} surname={this.state.surname} country={this.state.country} />;
+      }
+
       return(
         //<form onSubmit={this.handleSubmit}>
         <view>
@@ -91,7 +117,7 @@ class MyForm extends React.Component{
                 <button type="submit" id="bsubmit">Save</button>
               </div>
             </form>
-            <h1 id="message">Hello {this.state.name} {this.state.surname} from {this.state.country}</h1>
+            {message}
           </div>
   
   
@@ -103,21 +129,10 @@ class MyForm extends React.Component{
                 <th>Country</th>
                 <th>Birthday</th>
               </tr>
-              <tr>
-                <td></td>
-                <td>Portugal</td>
-                <td>11/12/1996</td>
-              </tr>
-              <tr>
-                <td>Inês Mota</td>
-                <td>Mexedo</td>
-                <td>19/03/1997</td>
-              </tr>
+              {this.tableInfo()}
               </tbody>
             </table>
           </div>
-  
-  
         </div>
       </view>
       );
