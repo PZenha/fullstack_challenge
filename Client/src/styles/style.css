@@ -1,3 +1,7 @@
+body {
+  background-color: #dddddd;
+}
+
 .container {
   background-color: #dddddd;
   width: 100%;
@@ -7,28 +11,29 @@
 }
 
 .maindiv {
-  border: 2px solid black;
   width: 50%;
+  display: inline-block;
+  vertical-align: top;
 }
 
 form {
   margin: 0 auto;
-  color: #2c75ad;
+  color: #2f80d6;
 }
 
 form input {
-  color: #2c75ad;
+  color: #2f80d6;
   padding: 5px 10px;
-  border: 2px solid #2c75ad;
+  border: 2px solid #2f80d6;
   border-radius: 4px;
   width: 40%;
   display: inline-block;
 }
 
 form select {
-  color: #2c75ad;
+  color: #2f80d6;
   padding: 5px 10px;
-  border: 2px solid #2c75ad;
+  border: 2px solid #2f80d6;
   border-radius: 4px;
   width: 54%;
   cursor: pointer;
@@ -63,7 +68,7 @@ form label {
 }
 
 #message {
-  background-color: #9dcf9d;
+  background-color: #b8f1b3;
   border-radius: 6px;
 }
 
@@ -92,9 +97,9 @@ button {
   position: relative;
   left: 82%;
   top: 46%;
-  border: 2px solid #2c75ad;
+  border: 2px solid #2f80d6;
   background-color: #dddddd;
-  color: #2c75ad;
+  color: #2f80d6;
   text-align: center;
   font-weight: bold;
   padding: 5px 10px;
@@ -104,12 +109,12 @@ table {
   color: black;
   border-collapse: collapse;
   width: 100%;
-  height: 50%;
+  height: 10%;
 }
 
 table td, table th {
   border-bottom: 1px solid gray;
-  text-align: left;
+  text-align: center;
 }
 
 table th {
@@ -117,12 +122,22 @@ table th {
 }
 
 .tableDiv {
-  position: absolute;
-  right: 38px;
+  position: relative;
   top: 10px;
   width: 45%;
-  height: 50%;
+  height: 325px;
   margin: auto;
-  border: 2px solid #2c75ad;
+  border: 2px solid #2f80d6;
+  display: inline-block;
+  clear: both;
+  overflow-y: scroll;
+}
+
+#signature {
+  display: block;
+  clear: both;
+  float: right;
+  margin: 10px;
+  color: #2f80d6;
 }
 /*# sourceMappingURL=style.css.map */

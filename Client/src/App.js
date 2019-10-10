@@ -10,12 +10,15 @@ class MyForm extends React.Component{
         surname: '',
         country: '',
         birthday: '',
+        day: '',
+        month: '',
         resMongo: [],
         clicked: false
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.tableInfo = this.tableInfo.bind(this);
+      this.UserAge = this.UserAge.bind(this);
     }
 
   handleChange(event){
@@ -79,17 +82,40 @@ class MyForm extends React.Component{
   }
 }
 
+  UserAge(){
+      let today = new Date();
+      let birthDate = new Date(this.state.birthday);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      console.log("birhDate: " + this.state.birthday);
+      let m = today.getMonth() - birthDate.getMonth();
+      if(m < 0 || (m === 0 && today.getDate() < birthDate.getDate())){
+        age--;  //Actual Age
+      }
+      if((today.getMonth() !== birthDate.getMonth()) || 
+      (today.getMonth() === birthDate.getMonth() && today.getDate() !== birthDate.getDate())){
+        age++; //Age on next birthday
+      }
+      return age;
+  }
+
     render(){
 
       let message; 
-
+      let birthDate = new Date(this.state.birthday);
       if(this.state.clicked){
-        message = <Greeting clicked={this.state.clicked} name={this.state.name} surname={this.state.surname} country={this.state.country} />;
+        message = <Greeting clicked={this.state.clicked} 
+        name={this.state.name} 
+        surname={this.state.surname} 
+        country={this.state.country} 
+        age={this.UserAge()} 
+        day={birthDate.getDate()}
+        month={birthDate.getMonth() + 1} />;
       }
 
       return(
         //<form onSubmit={this.handleSubmit}>
         <view>
+        <body>
         <div className="container">
           <div className="maindiv">
             <form onSubmit={this.handleSubmit}>
@@ -134,6 +160,8 @@ class MyForm extends React.Component{
             </table>
           </div>
         </div>
+        <div id="signature">Pedro Zenha</div>
+        </body>  
       </view>
       );
     }
