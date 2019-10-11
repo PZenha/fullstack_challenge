@@ -10,6 +10,8 @@ const app = express();
 
 app.use(bodyParser.json());
 
+//CORS POLICY
+//Setting the right headers to allow cross origin requests
 app.use((req,res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
@@ -20,6 +22,7 @@ app.use((req,res, next) => {
   next();
 });
 
+//GRAPHQL SCHEMA
 app.use('/graphql', graphqlHttp({
   schema: buildSchema(`
     type Event {
@@ -50,42 +53,44 @@ app.use('/graphql', graphqlHttp({
       mutation: RootMutation
     }
   `),
-  rootValue: {
-    events: () => {
-     return Event.find()
+  rootValue: { //Point at javascript objects with all resolver functions
+    events: () => {   //Query Resolver
+     return Event.find() //Query to search on DB even though we're not making any query on our App
       .then(events => {
-        return events.map(event => {
+        return events.map(event => { //Return the result
           return { ...event._doc };
         })
       })
-      .catch(err => {
+      .catch(err => { //Catch error
         throw err;
       });
     },
-    createEvent: (args) => {
+    createEvent: (args) => {   //Mutation Resolver
       const event = new Event({
         name: args.eventInput.name,
         surname: args.eventInput.surname,
         country: args.eventInput.country,
         birthday: args.eventInput.birthday
       });
-      return event.save().then(result => {
+      return event.save().then(result => { //Result from DB
               console.log(result);
-              return {...result._doc};
-              }).catch(err => {
+              return {...result._doc}; //._doc leaves all the metadata that we dont "need"
+              }).catch(err => { //Catch error
                 console.log(err);
                 throw err;
       });
     }
   },
-  graphiql: true
+  graphiql: true  //Graphql UI
 }));
 
+//Response to our React App with a JSON response with 3 countries
 app.get('/countries',(req,res) => {
   let countries = ["Portugal", "Germany", "Spain"];
   res.json({countries: countries});
 })
 
+//Connection to our DataBase and allow our API to listen in case of sucess
 mongoose.connect(process.env.DB_CONNECTION).then(() => {
   app.listen(4000,function(){
     console.log('Listen on port 4000');
