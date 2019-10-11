@@ -1,6 +1,8 @@
 import React from 'react';
+import axios from 'axios';
 import './styles/style.css';
 import Greeting from './Greeting';
+import PrintCountries from './CountriesList';
 
 class MyForm extends React.Component{
     constructor(props){
@@ -10,25 +12,26 @@ class MyForm extends React.Component{
         surname: '',
         country: '',
         birthday: '',
-        day: '',
-        month: '',
         resMongo: [],
-        clicked: false
+        clicked: false,
+        countries: []
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.tableInfo = this.tableInfo.bind(this);
       this.UserAge = this.UserAge.bind(this);
+      this.countryReq = this.countryReq.bind(this);
     }
 
   handleChange(event){
     this.setState({[event.target.name]: event.target.value});
-    this.setState({clicked: false});
+    this.setState({clicked: false}); //When the user starts to type again this flag resets
   } 
   
   handleSubmit(event){
     this.setState({clicked: true});
 
+    //graphql query
     const requestBody = {
       query: `
         mutation {
@@ -43,19 +46,20 @@ class MyForm extends React.Component{
       `
     };
 
+    //All graphql request are POST request (HTTP protocol)
     fetch('http://localhost:4000/graphql',{
       method: 'POST',
       body: JSON.stringify(requestBody),
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(res => {
+    }).then(res => { //Returns a promise
       if(res.status !== 200 && res.status !== 201) {
         throw new Error('Failed!')
       }
       return res.json();
     })
-    .then(resData => {
+    .then(resData => {    //HERE IS ALL THE DATA RETURNED
       this.setState(previousState => ({
         resMongo: [...previousState.resMongo, resData.data]
       }));
@@ -68,6 +72,7 @@ class MyForm extends React.Component{
     event.preventDefault();
   };
   
+  //Prints all data returned from the DB in the table
   tableInfo(){
     if(this.state.resMongo.length !== 0){
     return this.state.resMongo.map((info,index) => {
@@ -82,6 +87,7 @@ class MyForm extends React.Component{
   }
 }
 
+//Calculates de User input age in is next birthday
   UserAge(){
       let today = new Date();
       let birthDate = new Date(this.state.birthday);
@@ -98,12 +104,21 @@ class MyForm extends React.Component{
       return age;
   }
 
-    render(){
+  //Get request to the API to get list of countries   
+  countryReq(){
+    axios.get('http://localhost:4000/countries')  
+    .then((res) => {
+    this.setState({countries: res.data.countries});
+    console.log(this.state.countries);
+    })
 
+}
+
+    render(){
       let message; 
       let birthDate = new Date(this.state.birthday);
-      if(this.state.clicked){
-        message = <Greeting clicked={this.state.clicked} 
+      if(this.state.clicked){    //State changes if user start to input again
+        message = <Greeting clicked={this.state.clicked}  //Store HTML on message
         name={this.state.name} 
         surname={this.state.surname} 
         country={this.state.country} 
@@ -113,7 +128,6 @@ class MyForm extends React.Component{
       }
 
       return(
-        //<form onSubmit={this.handleSubmit}>
         <view>
         <body>
         <div className="container">
@@ -122,7 +136,7 @@ class MyForm extends React.Component{
               <div className="col-lft">
               <label htmlFor="fname">Name:</label> </div>
               <div className="col-rght">
-              <input id="fname" type='text' name="name" onChange={this.handleChange} /><p></p> </div>
+              <input id="fname" type='text' name="name" onChange={this.handleChange} required/><p></p> </div>
               <div className="col-lft">
               <label htmlFor="sname">Surname:</label> </div>
               <div className="col-rght">
@@ -131,9 +145,9 @@ class MyForm extends React.Component{
               <label htmlFor="countries">Countries:</label> </div>
               <div className="col-rght">
                 <div className="custom-select">
-              <select id="countries" name="country" onChange={this.handleChange}>
-                <option name="Spain">Spain</option>
-                <option name="Germany">Germany</option>
+              <select id="countries" name="country" onChange={this.handleChange}  onClick={this.countryReq} required>
+              <option disabled selected value>-- select an option --</option>
+              <PrintCountries country={this.state.countries}/>
                 </select></div><p></p></div>
                 <div className="col-lft">
               <label htmlFor="birthd">Birthday:</label> </div>

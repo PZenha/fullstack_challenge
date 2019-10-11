@@ -81,6 +81,11 @@ app.use('/graphql', graphqlHttp({
   graphiql: true
 }));
 
+app.get('/countries',(req,res) => {
+  let countries = ["Portugal", "Germany", "Spain"];
+  res.json({countries: countries});
+})
+
 mongoose.connect(process.env.DB_CONNECTION).then(() => {
   app.listen(4000,function(){
     console.log('Listen on port 4000');
