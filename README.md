@@ -14,9 +14,9 @@ using GraphQL.
 
 ### Installation 
 
-1- Clone Repo `https://github.com/PZenha/fullstack_challenge/`
-2- `cd API`
-3- `npm install`
-4- `cd Client`
-5- `npm install`
-6- On API run `node app.js` and on Client run `npm start`
+1. Clone Repo `https://github.com/PZenha/fullstack_challenge/`
+2. `cd API`
+3. `npm install`
+4. `cd Client`
+5. `npm install`
+6. On API run `node app.js` and on Client run `npm start`
