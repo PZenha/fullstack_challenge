@@ -7,10 +7,10 @@ Has part of the interview for my internship in Mosano, they proposed me with the
 To make this project I used Reacjs to develop the Front-end and NodeJs using Express for my Back-end. For Database I used MongoDB and made all querys
 using GraphQL.
 
-* [ReactJs] (https://reactjs.org/)
-* [NodeJs] (https://nodejs.org/en/)
-* [Express.js] (https://expressjs.com/)
-* [GraphQL] (https://graphql.org/)
+* [ReactJs](https://reactjs.org/)
+* [NodeJs](https://nodejs.org/en/)
+* [Express.js](https://expressjs.com/)
+* [GraphQL](https://graphql.org/)
 
 ### Installation 
 
